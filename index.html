@@ -51,8 +51,7 @@
                 .then(response => response.json())
                 .then(xdata => {
                     data = xdata;
-                    sortData(document.getElementById("sort-by").value)
-                    renderData();
+                    sortData(document.getElementById("sort-by").value);
                 })
                 .catch(error => {
                     console.error("Error loading songs:", error);
@@ -61,7 +60,6 @@
 
         function toggleData() {
             const newlyAddedBtn = document.getElementById("toggle-data");
-
             if (newlyAddedBtn.innerText === "Newly Added") {
                 loadData("data-newly-added.json");
                 newlyAddedBtn.innerText = "All Videos";
@@ -72,15 +70,10 @@
         }
 
         function formatNumber(value) {
-            if (value >= 1_000_000_000) {
-                return (value / 1_000_000_000).toFixed(1) + " B";
-            } else if (value >= 1_000_000) {
-                return (value / 1_000_000).toFixed(1) + " M";
-            } else if (value >= 1_000) {
-                return (value / 1_000).toFixed(1) + " K";
-            } else {
-                return value;
-            }
+            if (value >= 1_000_000_000) return (value / 1_000_000_000).toFixed(1) + " B";
+            if (value >= 1_000_000) return (value / 1_000_000).toFixed(1) + " M";
+            if (value >= 1_000) return (value / 1_000).toFixed(1) + " K";
+            return value;
         }
 
         function renderData() {
@@ -89,10 +82,11 @@
 
             data.forEach((song, index) => {
                 const card = document.createElement("div");
-                card.className = "p-4 flex flex-col items-start bg-gray-800 shadow-lg rounded-lg hover:bg-gray-700 transition cursor-pointer";
+                card.className = "p-4 flex items-center bg-gray-800 shadow-lg rounded-lg hover:bg-gray-700 transition cursor-pointer";
                 card.onclick = () => window.open("https://youtu.be/" + song.id, "_blank");
-
+                
                 const songInfo = document.createElement("div");
+                songInfo.className = "flex-1";
                 songInfo.innerHTML = `
                     <span class="font-semibold text-lg">${index + 1}. ${song.title}</span><br>
                     <span class="text-sm text-gray-400">🔎 ${formatNumber(song.view_count)}</span>
@@ -100,8 +94,14 @@
                     <span class="text-sm text-gray-400">💬 ${formatNumber(song.comment_count)}</span>
                     <span class="text-sm text-gray-400">🌍 ${song.frequency.toFixed(1)} %</span>
                 `;
-
+                
+                const thumbnail = document.createElement("img");
+                thumbnail.className = "w-20 h-20 rounded-lg object-cover ml-4";
+                thumbnail.src = "https://img.youtube.com/vi/" + song.id + "/hqdefault.jpg";
+                thumbnail.loading = "lazy";
+                
                 card.appendChild(songInfo);
+                card.appendChild(thumbnail);
                 musicList.appendChild(card);
             });
         }
@@ -110,10 +110,7 @@
             const now = new Date();
             const midnight = new Date();
             midnight.setUTCHours(18, 30, 0, 0);
-            if (now > midnight) {
-                midnight.setDate(midnight.getDate() + 1);
-            }
-
+            if (now > midnight) midnight.setDate(midnight.getDate() + 1);
             const diff = midnight - now;
             const hours = Math.floor(diff / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -121,10 +118,8 @@
         }
 
         let data = [];
-        document.getElementById("sort-by").addEventListener("change", (event) => {
-            sortData(event.target.value);
-        });
-        document.getElementById("toggle-data").addEventListener("click", () => toggleData());
+        document.getElementById("sort-by").addEventListener("change", event => sortData(event.target.value));
+        document.getElementById("toggle-data").addEventListener("click", toggleData);
         setInterval(istMidnightCountdown, 60000);
         istMidnightCountdown();
         loadData("data.json");

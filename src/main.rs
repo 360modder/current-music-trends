@@ -142,7 +142,7 @@ fn main() {
         }
 
         println!(
-            "Total {} unique videos new videos are added",
+            "Total {} unique new videos were added",
             data_new.len()
         );
         data_new.sort_by(|a, b| b.view_count.cmp(&a.view_count));

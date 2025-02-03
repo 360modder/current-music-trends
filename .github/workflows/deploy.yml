@@ -27,6 +27,7 @@ jobs:
             echo "Branch exists, checking out..."
             git fetch --all
             git checkout gh-pages
+            curl -L https://raw.githubusercontent.com/clitic/music/refs/heads/main/index.html -o index.html
           else
             echo "Branch does not exist, creating..."
             git checkout -b gh-pages
@@ -39,5 +40,5 @@ jobs:
       - name: Commit and push changes to gh-pages
         run: |
           git add -A
-          git commit -am "updated data.json & data-newly-added.json"
+          git commit -am "automatic deploy"
           git push origin gh-pages
